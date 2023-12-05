@@ -1,0 +1,11 @@
+{% extends "rest_framework/base.html" %}
+
+{% block content %}
+    <h2>Welcome to the Custom Browsable API View!</h2>
+    <p>This is a custom message or content that you want to display on the API view page.</p>
+
+    <!-- You can add more HTML content here as needed -->
+
+    {% include "rest_framework/api_form.html" %}
+    {% include "rest_framework/api_data.html" %}
+{% endblock %}
