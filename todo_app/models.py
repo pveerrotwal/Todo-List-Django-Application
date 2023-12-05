@@ -1,31 +1,33 @@
 from django.db import models
 from django.utils import timezone
-
+from django.urls import reverse
 
 def one_week_hence():
     return timezone.now() + timezone.timedelta(days=7)
 
+class ToDoList(models.Model):
+    title = models.CharField(max_length=100, unique=True)
 
-class TodoItem(models.Model):
-    STATUS_CHOICES = [
-        ('OPEN', 'Open'),
-        ('WORKING', 'Working'),
-        ('DONE', 'Done'),
-        ('OVERDUE', 'Overdue'),
-    ]
-
-    timestamp = models.DateTimeField(default=timezone.now)
-    title = models.CharField(max_length=100)
-    description = models.TextField(max_length=1000)
-    due_date = models.DateField(blank=True, null=True)
-    tags = models.ManyToManyField('Tag', blank=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='OPEN')
+    def get_absolute_url(self):
+        return reverse("list", args=[self.id])
 
     def __str__(self):
         return self.title
+    
+class TodoItem(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    due_date = models.DateTimeField(default=one_week_hence)
+    todo_list = models.ForeignKey(ToDoList, on_delete=models.CASCADE)
 
-class Tag(models.Model):
-    value = models.CharField(max_length=50, unique=True)
+    def get_absolute_url(self):
+        return reverse(
+            "item-update", args=[str(self.todo_list.id), str(self.id)]
+        )
 
     def __str__(self):
-        return self.value
+        return f"{self.title}: due {self.due_date}"
+
+    class Meta:
+        ordering = ["due_date"]

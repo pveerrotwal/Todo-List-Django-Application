@@ -4,7 +4,7 @@
 from django.test import TestCase
 from django.utils import timezone
 from django.urls import reverse
-from .models import ToDoList, ToDoItem
+from .models import ToDoList, TodoItem
 
 
 class ToDoListTests(TestCase):
@@ -25,7 +25,7 @@ class ToDoListTests(TestCase):
         self.assertEqual(self.todo_list.get_absolute_url(), expected_url)
 
 
-class ToDoItemTests(TestCase):
+class TodoItemTests(TestCase):
     def setUp(self):
         self.todo_list = ToDoList.objects.create(title="Work")
         self.todo_item = ToDoItem.objects.create(
